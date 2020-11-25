@@ -6,12 +6,13 @@
       class="photos__img"
       :src="photo.src"
       alt=""
-      @click="log"
+      @click="modal(photo.image_id)"
     >
   </div>
 </template>
 
 <script>
+import { getImages } from '../api/images.js'
 
 export default {
   data () {
@@ -20,15 +21,17 @@ export default {
     }
   },
   mounted () {
-    const api = 'https://tzfrontend.herokuapp.com/images/'
-    fetch(api)
-      .then(response => response.json())
-      .then((json) => { this.photos = json })
+    this.loadImages()
+      .then((respones) => { this.photos = respones })
   },
   methods: {
-    log () {
-      // eslint-disable-next-line no-console
-      console.log(this.photos)
+    modal (id) {
+      this.$emit('show', id)
+    },
+    async loadImages () {
+      const images = await getImages()
+
+      return images
     }
   }
 }
@@ -37,7 +40,26 @@ export default {
 <style scoped>
 .photos {
   display: grid;
-  grid-area: auto;
-  gap: 20px;
+  grid-template-columns: repeat(3, auto);
+  column-gap: 20px;
+  row-gap: 30px;
+  justify-content: center;
+  margin-top: 80px;
+}
+.photos__img {
+  width: 229px;
+  height: 142px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 760px) {
+  .photos {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .photos__img {
+    width: 280px;
+    height: 171px;
+  }
 }
 </style>
