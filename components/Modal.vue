@@ -1,16 +1,25 @@
 <template>
-  <b-modal id="my-modal" centered hide-header hide-footer size="lg">
-    <template #default>
+  <b-modal
+    id="my-modal"
+    centered
+    hide-header
+    hide-footer
+    size="lg"
+  >
+    <template #default="{ close }">
       <div class="my-modal">
         <div class="my-modal__img">
           <img :src="imgUrl" alt="" class="my-modal__img">
         </div>
         <div class="my-modal__comments">
-          3 Form will be here <br>
-          3 Form will be here <br>
-          3 Form will be here <br>
-          3 Form will be here
-          3 Form will be here
+          <span v-for="comment in comments" :key="comment.id" class="comments">
+            <p class="comments__comment comment comment--name">
+              {{ comment.name }}
+            </p>
+            <p class="comments__comment comment comment--description">
+              {{ comment.description }}
+            </p>
+          </span>
         </div>
         <div class="my-modal__form">
           <form>
@@ -22,7 +31,7 @@
           </form>
         </div>
       </div>
-      <button class="close__button">
+      <button class="close__button" @click="close">
         &times;
       </button>
     </template>
@@ -36,6 +45,10 @@ export default {
     imgUrl: {
       required: true,
       type: String
+    },
+    comments: {
+      required: true,
+      type: Array
     }
   },
   methods: {
