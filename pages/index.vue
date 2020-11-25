@@ -29,7 +29,7 @@ export default {
         .then((response) => { this.comments = response })
       setTimeout(() => {
         this.$bvModal.show('my-modal')
-      }, 150)
+      }, 250)
     },
     async loadImg (id) {
       const img = await getImg(id)

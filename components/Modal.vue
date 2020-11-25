@@ -84,4 +84,14 @@ export default {
   font-size: 20px;
   background: none;
 }
+.comments {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.comments__comment {
+  margin: 0;
+}
 </style>
