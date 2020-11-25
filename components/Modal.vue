@@ -16,16 +16,32 @@
             <p class="comments__comment comment comment--name">
               {{ comment.name }}
             </p>
-            <p class="comments__comment comment comment--description">
+            <p class="comments__comment  comments__comment--description">
               {{ comment.description }}
             </p>
           </span>
         </div>
         <div class="my-modal__form">
-          <form>
-            <b-form-input type="text" class="my-modal__input" placeholder="Ваше имя" />
-            <b-form-input type="text" class="my-modal__input" placeholder="Ваш комментарий" />
-            <b-button variant="primary" class="my-modal__button">
+          <form @submit.prevent="onSubmit">
+            <span
+              v-if="newComment.name === '' || newComment.comment === ''"
+              class="warning"
+            >
+              All fields required
+            </span>
+            <b-form-input
+              v-model="newComment.name"
+              type="text"
+              class="my-modal__input"
+              placeholder="Ваше имя"
+            />
+            <b-form-input
+              v-model="newComment.comment"
+              type="text"
+              class="my-modal__input"
+              placeholder="Ваш комментарий"
+            />
+            <b-button variant="primary" class="my-modal__button" type="submit">
               Оставить комментарий
             </b-button>
           </form>
@@ -39,7 +55,7 @@
 </template>
 
 <script>
-
+import { postComment } from '../api/comments'
 export default {
   props: {
     imgUrl: {
@@ -49,32 +65,70 @@ export default {
     comments: {
       required: true,
       type: Array
+    },
+    imgId: {
+      required: true,
+      type: Number
+    }
+  },
+  data () {
+    return {
+      newComment: {
+        name: null,
+        comment: null
+      }
     }
   },
   methods: {
+    async onSubmit () {
+      const { name, comment } = this.newComment
+      if (name.trim() && comment.trim()) {
+        await postComment(name, comment, this.imgId)
+        this.$bvModal.hide('my-modal')
+        this.setDefaultInputs()
+      }
+    },
+    setDefaultInputs () {
+      this.newComment.name = null
+      this.newComment.comment = null
+    }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .my-modal {
   display: grid;
   grid-template-columns: repeat(2, auto);
   justify-items: center;
+
+  &__img {
+    padding-top: 10px;
+    width: 381px;
+    height: 255px;
+  }
+
+  &__form {
+    width: 381px;
+    padding-top: 30px;
+  }
+
+  &__input, &__button {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  &__comments {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
 }
-.my-modal__img {
-  padding-top: 10px;
-  width: 381px;
-  height: 255px;
+
+.warning {
+  color: red;
 }
-.my-modal__form {
-  width: 381px;
-  padding-top: 30px;
-}
-.my-modal__input, .my-modal__button {
-  width: 100%;
-  margin-bottom: 20px;
-}
+
 .close__button {
   position: absolute;
   top: 5px;
@@ -85,13 +139,42 @@ export default {
   background: none;
 }
 .comments {
-  padding: 20px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  &__comment {
+    margin: 0;
+
+    &--description {
+      font-weight: bold;
+    }
+  }
 }
 
-.comments__comment {
-  margin: 0;
+@media screen and (max-width: 990px) {
+  .my-modal {
+    display: grid;
+    grid-template-columns: repeat(1, auto);
+    gap: 20px;
+    justify-items: flex-start;
+    justify-content: center;
+  }
 }
+
+@media screen and (max-width: 500px) {
+  .my-modal {
+    &__img {
+      padding-top: 10px;
+      width: 300px;
+      height: 255px;
+    }
+
+    &__form {
+      width: 300px;
+    }
+  }
+}
+
 </style>

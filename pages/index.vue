@@ -4,7 +4,7 @@
     <Header />
     <div class="container">
       <Photos @show="showModal" />
-      <Modal :img-url="currentPhoto" :comments="comments" />
+      <Modal :img-url="currentPhoto" :comments="comments" :img-id="imgId" />
     </div>
   </div>
 </template>
@@ -18,7 +18,8 @@ export default {
   data () {
     return {
       currentPhoto: '',
-      comments: []
+      comments: [],
+      imgId: 0
     }
   },
   methods: {
@@ -30,6 +31,7 @@ export default {
       setTimeout(() => {
         this.$bvModal.show('my-modal')
       }, 250)
+      this.imgId = id
     },
     async loadImg (id) {
       const img = await getImg(id)
